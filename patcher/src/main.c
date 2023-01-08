@@ -9,12 +9,12 @@ typedef struct stat stat_t;
 
 int main() {
     stat_t from_stat;
-    if (stat("v2game.exe", &from_stat) != 0) {
+    if (stat("../v2game.exe", &from_stat) != 0) {
         printf("From file stat error: %s\n", strerror(errno));
         return 1;
     }
 
-    FILE* from_file = fopen("v2game.exe", "rb");
+    FILE* from_file = fopen("../v2game.exe", "rb");
     if (from_file == NULL) {
         printf("From file open error: %s\n", strerror(errno));
         fclose(from_file);
@@ -31,7 +31,7 @@ int main() {
 
     fclose(from_file);
 
-    FILE* to_file = fopen("v2patch.exe", "wb");
+    FILE* to_file = fopen("../v2patch.exe", "wb");
     if (to_file == NULL) {
         printf("To file open error: %s\n", strerror(errno));
         fclose(to_file);
