@@ -7,13 +7,19 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <stdalign.h>
 
-const char* function_names[] = {
+_Alignas(64) static const char* function_names[] = {
     "lua_command_execute"
 };
 
-size_t function_offsets[] = {
-    0x1ceb0
+typedef struct function_size_offset_pair {
+    size_t size;
+    size_t offset;
+} function_size_offset_pair_t;
+
+_Alignas(64) static function_size_offset_pair_t function_size_offset_pairs[] = {
+    { 335, 0x1ceb0 }
 };
 
 typedef struct stat stat_t;
@@ -113,14 +119,22 @@ void apply_patches(UNUSED size_t size, uint8_t* data) {
             if (strcmp(name, function_names[i]) != 0) {
                 continue;
             }
+
+            function_size_offset_pair_t size_offset_pair = function_size_offset_pairs[i];
+
+            if (symbol->st_size > size_offset_pair.size) {
+                printf("Injected code is too big for function: %s\n", name);
+                goto end;
+            }
+
             const Elf32_Shdr* text_section_header = &section_headers[symbol->st_shndx];
             const uint8_t* text_section = &patch_data[text_section_header->sh_offset];
 
             const uint8_t* function_text = &text_section[symbol->st_value];
             // Patch the original file
-            memcpy(&data[function_offsets[i]], function_text, symbol->st_size);
+            memcpy(&data[size_offset_pair.offset], function_text, symbol->st_size);
 
-            printf("%s (0x%lx): ", name, function_offsets[i]);
+            printf("%s (0x%lx): ", name, size_offset_pair.offset);
             for (size_t i = 0; i < symbol->st_size; i++) {
                 printf("%02x ", function_text[i]);
             }
