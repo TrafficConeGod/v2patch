@@ -4,29 +4,26 @@
 #include <assert.h>
 #include <stdbool.h>
 
-typedef struct lua_command_execute_this {
+typedef struct command_execute_object {
     bool success;
     uint8_t _0[3];
     uint8_t b;
     uint8_t _1[15];
     uint32_t c;
     uint32_t d;
-} lua_command_execute_this_t;
+} command_execute_object_t;
 
-_Static_assert(sizeof(lua_command_execute_this_t) == 28, "");
+_Static_assert(sizeof(command_execute_object_t) == 28, "");
 
-extern void* lua_command_execute(lua_command_execute_this_t* this, UNUSED int* param_2) {
-    // volatile int x = 10;
-    // x++;
-
+extern command_execute_object_t* lua_command_execute(command_execute_object_t* this, UNUSED int* param_2) {
     // prevent a crash
     this->d = 0xf;
     this->c = 0;
     this->b = 0;
     this->success = true;
 
-    char msg[] = "Test";
-    print_to_debug_console((void*)this + 4, msg, 4);
+    const char msg[] = "Test";
+    print_to_object((void*)this + 4, msg, 4);
 
     return this;
 }

@@ -4,3 +4,4 @@
 #define PACKED __attribute__((__packed__))
 #define UNUSED __attribute__((__unused__))
 #define THISCALL __attribute__((__thiscall__))
+#define STDCALL __attribute__((__stdcall__))
