@@ -25,7 +25,8 @@ extern void* lua_command_execute(lua_command_execute_this_t* this, UNUSED int* p
     this->b = 0;
     this->success = true;
 
-    print_to_debug_console((void*)this + 4, PLEASE_TYPE_SOME_LUA_CODE_MSG, 0x1a);
+    char msg[] = "Test";
+    print_to_debug_console((void*)this + 4, msg, 4);
 
     return this;
 }

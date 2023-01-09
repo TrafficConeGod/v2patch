@@ -6,13 +6,13 @@ WARNS := -Wall -Wextra -Wdouble-promotion -Wduplicate-decl-specifier -Wformat=2 
 OBJECTS := $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SOURCES)))
 DEPENDS := $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SOURCES)))
 
-override CFLAGS += -fno-pic -m32 -O3 -Werror -std=c2x -isystem /usr/include/freetype2
+override CFLAGS += -fno-pic -nostdlib -m32 -O3 -Werror -std=c2x -isystem /usr/include/freetype2
 CXXFLAGS = $(CFLAGS) -fno-exceptions -std=c++2a
 
 .PHONY: build run clean
 
 build: $(OBJECTS)
-	ld -melf_i386 -E -r $(OBJECTS) -o $(TARGET).o
+	ld -nostdlib -melf_i386 -E -r $(OBJECTS) -o $(TARGET).o
 
 clean:
 	$(RM) $(OBJECTS) $(DEPENDS)
