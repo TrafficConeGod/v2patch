@@ -4,10 +4,12 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <bits/types/error_t.h>
 
 typedef struct stat stat_t;
 
-int main() {
+error_t main() {
     stat_t from_stat;
     if (stat("../v2game.exe", &from_stat) != 0) {
         printf("From file stat error: %s\n", strerror(errno));
@@ -21,7 +23,7 @@ int main() {
         return 1;
     }
 
-    void* data = malloc(from_stat.st_size);
+    uint8_t* data = malloc(from_stat.st_size);
     if (fread(data, from_stat.st_size, 1, from_file) != 1) {
         printf("From file read error: %s\n", strerror(errno));
         fclose(from_file);

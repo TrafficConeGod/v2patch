@@ -1,4 +1,4 @@
-TARGET := app
+TARGET := patch
 
 SOURCES := $(wildcard src/*.c) $(wildcard src/*.cpp)
 LIBS := 
@@ -6,16 +6,13 @@ WARNS := -Wall -Wextra -Wdouble-promotion -Wduplicate-decl-specifier -Wformat=2 
 OBJECTS := $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SOURCES)))
 DEPENDS := $(patsubst %.c,%.d,$(patsubst %.cpp,%.d,$(SOURCES)))
 
-override CFLAGS += -O3 -flto -Werror -std=c2x -isystem /usr/include/freetype2
+override CFLAGS += -m32 -O1 -Werror -std=c2x -isystem /usr/include/freetype2
 CXXFLAGS = $(CFLAGS) -fno-exceptions -std=c++2a
 
 .PHONY: build run clean
 
 build: $(OBJECTS)
-	$(CC) $(CFLAGS) -o $(TARGET).elf $(OBJECTS) $(LIBS)
-
-run: build
-	@./$(TARGET).elf
+	ld -melf_i386 -E -r $(OBJECTS) -o $(TARGET).o
 
 clean:
 	$(RM) $(OBJECTS) $(DEPENDS)
